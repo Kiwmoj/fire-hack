@@ -135,27 +135,45 @@ st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severi
 
 
 # ──────────────────────────────────────────────
-# LIVE CAMERA FEEDS
+# LIVE CAMERA FEEDS (Public traffic cameras)
 # ──────────────────────────────────────────────
 st.subheader("Live Camera Feeds")
-st.caption("Simulated traffic camera streams · In production these connect to real IoT cameras")
+st.caption("Public live traffic cameras · Streams may restart periodically")
 
 cam1, cam2, cam3 = st.columns(3)
 
 with cam1:
-    st.markdown("**Cam 01 · I-95 Sector 4**")
-    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
-    st.caption("🔴 Heavy congestion detected")
+    st.markdown("**Cam 01 · San Francisco Live**")
+    st.components.v1.html("""
+    <iframe width="100%" height="200"
+        src="https://www.youtube.com/embed/G8RIAgPxaMc?autoplay=1"
+        frameborder="0" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+    """, height=220)
+    st.caption("🔴 SF Bay Area public camera")
 
 with cam2:
-    st.markdown("**Cam 07 · Route 7 Corridor**")
-    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
-    st.caption("🟢 Free flow · Green Wave active")
+    st.markdown("**Cam 07 · Tokyo Highway Live**")
+    st.components.v1.html("""
+    <iframe width="100%" height="200"
+        src="https://www.youtube.com/embed/kT_uXqRxFl0?autoplay=1"
+        frameborder="0" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+    """, height=220)
+    st.caption("🟢 Tokyo highway traffic cam")
 
 with cam3:
-    st.markdown("**Cam 12 · Downtown Grid A**")
-    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
-    st.caption("🟡 Moderate traffic")
+    st.markdown("**Cam 12 · Highway Monitor**")
+    st.components.v1.html("""
+    <iframe width="100%" height="200"
+        src="https://www.youtube.com/embed/WziVM3p9k-U?autoplay=1"
+        frameborder="0" allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+    """, height=220)
+    st.caption("🟡 Tokyo ring road live cam")
 
 
 # ──────────────────────────────────────────────
@@ -276,6 +294,6 @@ if not log_df.empty:
     )
 
 st.caption(
-    f"SignalSentinel AI v2.6  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v2.7  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
