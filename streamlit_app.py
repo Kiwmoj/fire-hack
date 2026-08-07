@@ -49,6 +49,24 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+def generate_map_points(n=80):
+    """Generate simulated traffic sensor points around a city center."""
+    center_lat, center_lon = 40.7580, -73.9855  # demo city center
+
+    lats = center_lat + np.random.normal(0, 0.04, n)
+    lons = center_lon + np.random.normal(0, 0.05, n)
+
+    congestion = np.random.choice(["Free", "Moderate", "Heavy"], n, p=[0.55, 0.30, 0.15])
+    size = np.where(congestion == "Heavy", 80, np.where(congestion == "Moderate", 50, 30))
+
+    return pd.DataFrame({
+        "lat": lats,
+        "lon": lons,
+        "congestion": congestion,
+        "size": size
+    })
+
+
 # ──────────────────────────────────────────────
 # Sidebar
 # ──────────────────────────────────────────────
@@ -105,14 +123,25 @@ st.divider()
 
 
 # ──────────────────────────────────────────────
+# LIVE MAP
+# ──────────────────────────────────────────────
+st.subheader("Live Traffic Map")
+st.caption("Real-time sensor locations · Point size indicates congestion severity")
+
+map_df = generate_map_points(90)
+st.map(map_df, size="size", zoom=11, use_container_width=True)
+
+st.caption("Larger points = heavier congestion")
+
+
+# ──────────────────────────────────────────────
 # Main area
 # ──────────────────────────────────────────────
 left, right = st.columns([2, 1])
 
 with left:
-    st.subheader("Live Traffic Heatmap")
+    st.subheader("Sector Heatmap Grid")
 
-    # Build simple heatmap without matplotlib
     heatmap_data = simulator.get_heatmap(cols=12, rows=8)
     cells = heatmap_data["cells"]
 
@@ -121,7 +150,6 @@ with left:
         val = {"free": 0.25, "moderate": 0.6, "heavy": 0.95}.get(cell["state"], 0.3)
         grid[cell["r"] % 8, cell["c"] % 12] = val
 
-    # Show as a simple table with emoji intensity
     rows = []
     for r in range(8):
         row = []
@@ -136,10 +164,8 @@ with left:
         rows.append(row)
 
     df_heat = pd.DataFrame(rows, columns=[f"S{c+1}" for c in range(12)])
-    st.dataframe(df_heat, use_container_width=True, hide_index=True, height=280)
-    st.caption("🟢 Free   🟡 Moderate   🔴 Heavy congestion")
+    st.dataframe(df_heat, use_container_width=True, hide_index=True, height=260)
 
-    # Alerts
     st.subheader("Active Alerts")
     for a in status_data["alerts"]:
         icon = {"critical": "🔴", "warn": "🟡", "info": "🔵"}.get(a["level"], "⚪")
@@ -226,6 +252,6 @@ if not log_df.empty:
     )
 
 st.caption(
-    f"SignalSentinel AI v2.4.1  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v2.5  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
