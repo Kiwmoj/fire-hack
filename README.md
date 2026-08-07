@@ -2,10 +2,9 @@
 
 **Hybrid traffic management & analytics system** for national / multi-city networks.
 
-Real-time IoT sensor data + AI/ML signal optimization with human-in-the-loop controls for administrators, emergency services, and urban planners.
+Pure **Python** implementation using **Streamlit**.
 
-![Design](https://img.shields.io/badge/UI-Command%20%26%20Control%20Dark-0D1117?style=flat-square)
-![Stack](https://img.shields.io/badge/Stack-Python%20%7C%20Flask-3B82F6?style=flat-square)
+Real-time IoT sensor data + AI/ML signal optimization with human-in-the-loop controls for administrators, emergency services, and urban planners.
 
 ## Features
 
@@ -23,54 +22,49 @@ Real-time IoT sensor data + AI/ML signal optimization with human-in-the-loop con
 
 ## Tech Stack
 
-- **Backend**: Python 3.12 + Flask
-- **Frontend**: Vanilla JS + custom CSS (no Tailwind CDN)
-- **Charts**: Chart.js
-- **Design**: Dark Command & Control (`#0D1117` / `#1F2937` / `#3B82F6`)
+- **Language**: Python 3.12
+- **UI**: Streamlit (pure Python, no HTML/JS required)
+- **Data**: pandas + numpy
+- **Simulation**: Custom Python traffic & AI engine
 
 ## Quick Start
 
 ```bash
+# 1. Clone
 git clone https://github.com/Kiwmoj/fire-hack.git
 cd fire-hack
 
+# 2. Create virtualenv
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 
+# 3. Install dependencies
 pip install -r requirements.txt
-python app.py
+
+# 4. Run the dashboard
+streamlit run streamlit_app.py
 ```
 
-Open **http://localhost:5000**
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET`  | `/api/status` | Full system status, KPIs, alerts, AI log |
-| `GET`  | `/api/heatmap` | Live traffic heatmap cells |
-| `POST` | `/api/ai/toggle` | Enable / disable AI optimization |
-| `POST` | `/api/ai/force-cycle` | Force an optimization cycle |
-| `POST` | `/api/green-wave` | Trigger Green Wave |
-| `POST` | `/api/policy/simulate` | Run policy simulation |
-| `GET`  | `/api/health` | Health check |
+Open the URL shown in the terminal (usually **http://localhost:8501**)
 
 ## Project Structure
 
 ```
 fire-hack/
-├── app.py
-├── requirements.txt
+├── streamlit_app.py        # Main Streamlit dashboard (pure Python)
 ├── services/
-│   └── simulator.py
-├── templates/
-│   └── dashboard.html
-├── static/
-│   └── css/
-│       └── app.css
+│   └── simulator.py        # Traffic / AI / Green Wave simulation
+├── requirements.txt
 ├── .gitignore
 └── README.md
 ```
+
+## Design
+
+Dark Command & Control aesthetic:
+- Background `#0D1117`
+- Cards `#1F2937`
+- Accent `#3B82F6`
 
 ## License
 
