@@ -51,7 +51,7 @@ st.markdown("""
 
 def generate_map_points(n=80):
     """Generate simulated traffic sensor points around a city center."""
-    center_lat, center_lon = 40.7580, -73.9855  # demo city center
+    center_lat, center_lon = 40.7580, -73.9855
 
     lats = center_lat + np.random.normal(0, 0.04, n)
     lons = center_lon + np.random.normal(0, 0.05, n)
@@ -131,7 +131,31 @@ st.caption("Real-time sensor locations · Point size indicates congestion severi
 map_df = generate_map_points(90)
 st.map(map_df, size="size", zoom=11, use_container_width=True)
 
-st.caption("Larger points = heavier congestion")
+st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severity)")
+
+
+# ──────────────────────────────────────────────
+# LIVE CAMERA FEEDS
+# ──────────────────────────────────────────────
+st.subheader("Live Camera Feeds")
+st.caption("Simulated traffic camera streams · In production these connect to real IoT cameras")
+
+cam1, cam2, cam3 = st.columns(3)
+
+with cam1:
+    st.markdown("**Cam 01 · I-95 Sector 4**")
+    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
+    st.caption("🔴 Heavy congestion detected")
+
+with cam2:
+    st.markdown("**Cam 07 · Route 7 Corridor**")
+    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
+    st.caption("🟢 Free flow · Green Wave active")
+
+with cam3:
+    st.markdown("**Cam 12 · Downtown Grid A**")
+    st.video("https://www.w3schools.com/html/mov_bbb.mp4")
+    st.caption("🟡 Moderate traffic")
 
 
 # ──────────────────────────────────────────────
@@ -252,6 +276,6 @@ if not log_df.empty:
     )
 
 st.caption(
-    f"SignalSentinel AI v2.5  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v2.6  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
