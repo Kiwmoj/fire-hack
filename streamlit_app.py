@@ -12,6 +12,12 @@ import numpy as np
 
 from services.simulator import simulator
 
+try:
+    from streamlit_autorefresh import st_autorefresh
+    HAS_AUTOREFRESH = True
+except ImportError:
+    HAS_AUTOREFRESH = False
+
 st.set_page_config(
     page_title="SignalSentinel AI",
     page_icon="🚦",
@@ -70,6 +76,12 @@ with st.sidebar:
     st.divider()
     if st.button("↻ Refresh Data"):
         st.rerun()
+
+    auto = st.checkbox("Auto-refresh every 5s", value=True, key="auto_refresh")
+    if auto and HAS_AUTOREFRESH:
+        st_autorefresh(interval=5000, key="ss_auto")
+    elif auto and not HAS_AUTOREFRESH:
+        st.caption("Install streamlit-autorefresh for auto updates")
 
 
 col1, col2 = st.columns([4, 1])
@@ -296,6 +308,6 @@ if not log_df.empty:
     st.dataframe(log_df[["time", "title", "detail"]], use_container_width=True, hide_index=True, height=200)
 
 st.caption(
-    f"SignalSentinel AI v3.1  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v3.2  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )

@@ -109,9 +109,16 @@ class TrafficSimulator:
     def get_status(self) -> dict[str, Any]:
         with self._lock:
             self._tick_green_wave()
-            # Small realistic jitter
-            self.status.ai_latency_ms = round(16 + random.uniform(0, 6), 1)
-            self.status.active_sensors = 12800 + random.randint(0, 50)
+            # Live-looking jitter every poll so dashboard never freezes
+            self.status.ai_latency_ms = round(16 + random.uniform(0, 8), 1)
+            self.status.active_sensors = 12800 + random.randint(0, 80)
+            self.status.signal_nodes = 4291 + random.randint(-5, 5)
+            self.kpis.avg_travel_time_min = round(13.5 + random.uniform(0, 1.8), 1)
+            self.kpis.avg_travel_delta_pct = round(-10 + random.uniform(0, 5), 1)
+            self.kpis.congestion_index = round(0.30 + random.uniform(0, 0.18), 2)
+            self.kpis.congestion_delta_pct = round(1 + random.uniform(0, 5), 1)
+            self.kpis.signal_efficiency_pct = round(89 + random.uniform(0, 4), 1)
+            self.kpis.emergency_response_min = round(1.8 + random.uniform(0, 0.6), 1)
             return {
                 "status": asdict(self.status),
                 "kpis": asdict(self.kpis),
@@ -160,7 +167,6 @@ class TrafficSimulator:
             now = self._now_str()
             self.status.last_ai_action = f"Forced cycle completed — {now}"
             self._push_log("Manual optimization forced", "Admin • Network-wide rebalance")
-            # Slight KPI improvement
             self.kpis.congestion_index = max(0.15, self.kpis.congestion_index - 0.02)
             return {"last_ai_action": self.status.last_ai_action}
 
@@ -171,11 +177,10 @@ class TrafficSimulator:
             self.green_wave = GreenWaveState(
                 active=True,
                 route=route,
-                remaining_seconds=252,  # 4m 12s
+                remaining_seconds=252,
                 started_at=time.time(),
             )
             self._push_log("Green Wave triggered", f"Emergency • {route.split('—')[0].strip()}")
-            # Update alert
             self.alerts = [a for a in self.alerts if a.type != "GREEN WAVE"]
             self.alerts.insert(
                 0,
@@ -217,5 +222,4 @@ class TrafficSimulator:
             return {"message": msg, "level": level}
 
 
-# Singleton used by the Flask app
 simulator = TrafficSimulator()
