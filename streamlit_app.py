@@ -51,6 +51,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+USERS = {
+    "admin": {"password": "admin123", "role": "Admin", "name": "System Administrator"},
+    "emergency": {"password": "emergency123", "role": "Emergency", "name": "Emergency Responder"},
+    "planner": {"password": "planner123", "role": "Planner", "name": "Urban Planner"},
+    "viewer": {"password": "viewer123", "role": "Viewer", "name": "Public Viewer"},
+}
+
+
 def generate_map_points(n=80):
     center_lat, center_lon = 40.7580, -73.9855
     lats = center_lat + np.random.normal(0, 0.04, n)
@@ -60,19 +68,78 @@ def generate_map_points(n=80):
     return pd.DataFrame({"lat": lats, "lon": lons, "congestion": congestion, "size": size})
 
 
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+    st.session_state.role = None
+    st.session_state.username = None
+    st.session_state.display_name = None
+
+if not st.session_state.logged_in:
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_l, col_c, col_r = st.columns([1, 1.4, 1])
+    with col_c:
+        st.markdown("## 🚦 SignalSentinel AI")
+        st.caption("National Traffic Command — Secure Login")
+        st.divider()
+
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign In", use_container_width=True)
+
+            if submitted:
+                user = USERS.get(username.strip().lower())
+                if user and user["password"] == password:
+                    st.session_state.logged_in = True
+                    st.session_state.role = user["role"]
+                    st.session_state.username = username.strip().lower()
+                    st.session_state.display_name = user["name"]
+                    st.success(f"Welcome, {user['name']}")
+                    time.sleep(0.4)
+                    st.rerun()
+                else:
+                    st.error("Invalid username or password")
+
+        st.divider()
+        st.markdown("**Demo accounts**")
+        st.markdown("""
+| Username | Password | Access |
+|----------|----------|--------|
+| `admin` | `admin123` | Full admin (AI controls, overrides) |
+| `emergency` | `emergency123` | Green Wave / priority routing |
+| `planner` | `planner123` | Analytics & policy simulator |
+| `viewer` | `viewer123` | View-only dashboard |
+""")
+    st.stop()
+
+
+role = st.session_state.role
+
 with st.sidebar:
     st.title("🚦 SignalSentinel AI")
     st.caption("National Traffic Command")
-    role = st.radio("Operator Role", ["Admin", "Emergency", "Planner"], index=0)
+    st.success(f"**{st.session_state.display_name}**")
+    st.caption(f"Role: {role}")
+
+    if st.button("Sign Out"):
+        st.session_state.logged_in = False
+        st.session_state.role = None
+        st.session_state.username = None
+        st.session_state.display_name = None
+        st.rerun()
+
     st.divider()
+
     status_data = simulator.get_status()
     s = status_data["status"]
     k = status_data["kpis"]
+
     st.subheader("System Health")
     st.metric("Active Sensors", f"{s['active_sensors']:,}")
     st.metric("Signal Nodes", f"{s['signal_nodes']:,}")
     st.metric("AI Latency", f"{s['ai_latency_ms']} ms")
     st.metric("Uptime", f"{s['uptime_pct']}%")
+
     st.divider()
     if st.button("↻ Refresh Data"):
         st.rerun()
@@ -87,7 +154,7 @@ with st.sidebar:
 col1, col2 = st.columns([4, 1])
 with col1:
     st.title("Command & Control")
-    st.caption(f"Role: **{role}**  ·  System Online  ·  IoT Connected")
+    st.caption(f"Logged in as **{st.session_state.display_name}** ({role})  ·  System Online")
 with col2:
     ai_label = "🟢 AUTO" if s["ai_enabled"] else "🔴 OFF"
     st.metric("AI Engine", ai_label)
@@ -109,7 +176,7 @@ st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severi
 
 
 st.subheader("Live Camera Feeds – United States")
-st.caption("Public government traffic cameras (snapshot images) · Click Refresh to update · Official 511 links for every state")
+st.caption("Public government traffic cameras (snapshot images)")
 
 CAMERA_CATALOG = {
     "Iowa": [
@@ -195,19 +262,19 @@ with tab1:
             except Exception:
                 st.warning("Camera temporarily offline")
             st.caption(f"📍 {region}")
-    st.info("These are live government camera **snapshots** (not continuous video). They update every 30–60 seconds on the server. Click **↻ Refresh Data** in the sidebar to load the newest image.")
+    st.info("These are live government camera **snapshots**. Click **↻ Refresh Data** to load the newest image.")
 
 with tab2:
     st.markdown("Open the official state traffic camera / 511 map for any state:")
     states = list(STATE_511.keys())
     n_cols = 4
     for i in range(0, len(states), n_cols):
-        row_states = states[i:i+n_cols]
+        row_states = states[i:i + n_cols]
         row_cols = st.columns(n_cols)
         for col, state in zip(row_cols, row_states):
             with col:
                 st.markdown(f"[{state}]({STATE_511[state]})")
-    st.info("These are the official government traffic camera pages for every US state and DC. Click any state to open its live cameras.")
+    st.info("Official government traffic camera pages for every US state and DC.")
 
 
 left, right = st.columns([2, 1])
@@ -234,6 +301,7 @@ with left:
         rows.append(row)
     df_heat = pd.DataFrame(rows, columns=[f"S{c+1}" for c in range(12)])
     st.dataframe(df_heat, use_container_width=True, hide_index=True, height=260)
+
     st.subheader("Active Alerts")
     for a in status_data["alerts"]:
         icon = {"critical": "🔴", "warn": "🟡", "info": "🔵"}.get(a["level"], "⚪")
@@ -241,7 +309,7 @@ with left:
 
 with right:
     if role == "Admin":
-        st.subheader("AI Engine")
+        st.subheader("AI Engine (Admin Only)")
         label = "Disable AI" if s["ai_enabled"] else "Enable AI"
         if st.button(label, type="primary"):
             simulator.toggle_ai()
@@ -252,6 +320,8 @@ with right:
             time.sleep(0.4)
             st.rerun()
         st.info(f"**Last Action**\n\n{s['last_ai_action']}")
+        st.caption("Only administrators can toggle AI or force optimization.")
+
     elif role == "Emergency":
         st.subheader("Priority Routing")
         st.warning("EMERGENCY MODE")
@@ -275,6 +345,7 @@ with right:
                     st.rerun()
                 else:
                     st.error(result.get("message", "Failed"))
+
     elif role == "Planner":
         st.subheader("Policy Simulator")
         policy = st.selectbox("Policy", [
@@ -301,13 +372,23 @@ with right:
         m1.metric("Delay Saved", "1,847 hrs")
         m2.metric("Fuel Saved", "42.3k L")
 
+    else:
+        st.subheader("Viewer Access")
+        st.info("You have **view-only** access.\n\nYou can see live maps, cameras, KPIs, and alerts.\n\nAdmin features (AI controls) and Emergency tools are hidden.")
+        st.caption("Contact an administrator for elevated access.")
+
+
 st.divider()
-st.subheader("AI Actions Log")
-log_df = pd.DataFrame(status_data["ai_log"])
-if not log_df.empty:
-    st.dataframe(log_df[["time", "title", "detail"]], use_container_width=True, hide_index=True, height=200)
+if role in ("Admin", "Planner", "Emergency"):
+    st.subheader("AI Actions Log")
+    log_df = pd.DataFrame(status_data["ai_log"])
+    if not log_df.empty:
+        st.dataframe(log_df[["time", "title", "detail"]], use_container_width=True, hide_index=True, height=200)
+else:
+    st.subheader("System Status")
+    st.caption("Detailed AI action log is restricted to Admin / Emergency / Planner accounts.")
 
 st.caption(
-    f"SignalSentinel AI v3.2  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v3.3  ·  {role}  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
