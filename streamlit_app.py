@@ -96,25 +96,21 @@ st.map(map_df, size="size", zoom=11, use_container_width=True)
 st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severity)")
 
 
-# LIVE CAMERA FEEDS – United States
 st.subheader("Live Camera Feeds – United States")
-st.caption("Public government traffic cameras · Official 511 links for every state")
+st.caption("Public government traffic cameras (snapshot images) · Click Refresh to update · Official 511 links for every state")
 
 CAMERA_CATALOG = {
     "Iowa": [
         ("I-235 @ E 14th St, Des Moines", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg"),
         ("I-80 @ MM 71.7", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg"),
-        ("US-20 @ Dubuque", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg"),
         ("I-80 Rest Area near Davenport", "https://atmsqf.iowadot.gov/snapshots/Public/RestAreas/RA80EB300-01-CENTER.jpg"),
+        ("RWIS I-35 MM 140", "https://atmsqf.iowadot.gov/snapshots/Public/RWIS/RWIS_84-01.jpg"),
     ],
     "Virginia": [
         ("I-64 / MM 238.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads877.flv.png"),
         ("I-64 / MM 237.8 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads878.flv.png"),
         ("I-64 / MM 236.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads881.flv.png"),
         ("Settlers Landing / I-64", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads887.flv.png"),
-    ],
-    "California": [
-        ("US-101 at Ventura Blvd", "https://cwwp2.dot.ca.gov/data/d7/cctv/image/us101atventurabl/us101atventurabl.jpg"),
     ],
 }
 
@@ -187,7 +183,7 @@ with tab1:
             except Exception:
                 st.warning("Camera temporarily offline")
             st.caption(f"📍 {region}")
-    st.caption("Click **↻ Refresh Data** in the sidebar to reload the latest images.")
+    st.info("These are live government camera **snapshots** (not continuous video). They update every 30–60 seconds on the server. Click **↻ Refresh Data** in the sidebar to load the newest image.")
 
 with tab2:
     st.markdown("Open the official state traffic camera / 511 map for any state:")
@@ -300,6 +296,6 @@ if not log_df.empty:
     st.dataframe(log_df[["time", "title", "detail"]], use_container_width=True, hide_index=True, height=200)
 
 st.caption(
-    f"SignalSentinel AI v3.0  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v3.1  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
