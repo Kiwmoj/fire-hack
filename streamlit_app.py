@@ -135,45 +135,44 @@ st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severi
 
 
 # ──────────────────────────────────────────────
-# LIVE CAMERA FEEDS (Public traffic cameras)
+# LIVE CAMERA FEEDS (Public traffic camera snapshots)
 # ──────────────────────────────────────────────
 st.subheader("Live Camera Feeds")
-st.caption("Public live traffic cameras · Streams may restart periodically")
+st.caption("Public DOT traffic cameras · Images refresh every ~30–60 seconds")
+
+# Cache-busting timestamp so browsers reload the images
+_ts = int(time.time())
 
 cam1, cam2, cam3 = st.columns(3)
 
 with cam1:
-    st.markdown("**Cam 01 · San Francisco Live**")
-    st.components.v1.html("""
-    <iframe width="100%" height="200"
-        src="https://www.youtube.com/embed/G8RIAgPxaMc?autoplay=1"
-        frameborder="0" allowfullscreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-    </iframe>
-    """, height=220)
-    st.caption("🔴 SF Bay Area public camera")
+    st.markdown("**Cam 01 · I-235 Des Moines (Iowa DOT)**")
+    st.image(
+        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg?t={_ts}",
+        use_container_width=True,
+        caption="Live public traffic camera"
+    )
+    st.caption("🔴 Live · Iowa DOT")
 
 with cam2:
-    st.markdown("**Cam 07 · Tokyo Highway Live**")
-    st.components.v1.html("""
-    <iframe width="100%" height="200"
-        src="https://www.youtube.com/embed/kT_uXqRxFl0?autoplay=1"
-        frameborder="0" allowfullscreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-    </iframe>
-    """, height=220)
-    st.caption("🟢 Tokyo highway traffic cam")
+    st.markdown("**Cam 07 · I-80 Iowa (Iowa DOT)**")
+    st.image(
+        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg?t={_ts}",
+        use_container_width=True,
+        caption="Live public traffic camera"
+    )
+    st.caption("🟢 Live · Iowa DOT")
 
 with cam3:
-    st.markdown("**Cam 12 · Highway Monitor**")
-    st.components.v1.html("""
-    <iframe width="100%" height="200"
-        src="https://www.youtube.com/embed/WziVM3p9k-U?autoplay=1"
-        frameborder="0" allowfullscreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
-    </iframe>
-    """, height=220)
-    st.caption("🟡 Tokyo ring road live cam")
+    st.markdown("**Cam 12 · US-20 Dubuque (Iowa DOT)**")
+    st.image(
+        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg?t={_ts}",
+        use_container_width=True,
+        caption="Live public traffic camera"
+    )
+    st.caption("🟡 Live · Iowa DOT")
+
+st.caption("These are real public government traffic cameras. Click **↻ Refresh Data** in the sidebar to update the images.")
 
 
 # ──────────────────────────────────────────────
@@ -294,6 +293,6 @@ if not log_df.empty:
     )
 
 st.caption(
-    f"SignalSentinel AI v2.7  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v2.8  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
