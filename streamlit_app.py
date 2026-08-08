@@ -190,6 +190,16 @@ Command Dashboard
     st.caption("Real-time loop · Human override always available")
 
 
+ROLE_META = {
+    "Admin": ("🔴 ADMIN", "Full system control · AI engine · manual overrides"),
+    "Emergency": ("🟠 EMERGENCY", "Priority routing · Green Wave corridors"),
+    "Planner": ("🔵 PLANNER", "Analytics · policy simulation · impact reports"),
+    "Viewer": ("⚪ VIEWER", "Read-only dashboard · no control actions"),
+}
+badge, blurb = ROLE_META.get(role, ("ROLE", ""))
+st.markdown(f"### {badge}")
+st.caption(blurb)
+
 h1, h2 = st.columns([5, 1])
 with h1:
     st.markdown("# Command & Control")
@@ -204,12 +214,15 @@ k2.metric("Congestion Index", f"{k['congestion_index']:.2f}", f"+{k['congestion_
 k3.metric("Signal Efficiency", f"{k['signal_efficiency_pct']}%")
 k4.metric("Emergency Response", f"{k['emergency_response_min']} min")
 
-st.markdown("### Demo Impact (simulated 30-day window)")
-i1, i2, i3, i4 = st.columns(4)
-i1.metric("Delay Hours Saved", "1,847", "+12%")
-i2.metric("Fuel Saved", "42.3k L", "+9%")
-i3.metric("Emergency ETA Cut", "34%", "faster response")
-i4.metric("Signals Optimized", "47", "last cycle")
+if role in ("Admin", "Planner", "Emergency"):
+    st.markdown("### Demo Impact (simulated 30-day window)")
+    i1, i2, i3, i4 = st.columns(4)
+    i1.metric("Delay Hours Saved", "1,847", "+12%")
+    i2.metric("Fuel Saved", "42.3k L", "+9%")
+    i3.metric("Emergency ETA Cut", "34%", "faster response")
+    i4.metric("Signals Optimized", "47", "last cycle")
+else:
+    st.caption("Demo impact metrics are hidden for Viewer accounts.")
 
 st.divider()
 
@@ -294,36 +307,43 @@ with left:
         st.markdown(f"**{icon} {a['type']}** — {a['title']}  \n`{a['detail']} · {a['timestamp']}`")
 
 with right:
+    st.markdown(f"### Controls · {role}")
+
     if role == "Admin":
-        st.markdown("### AI Engine")
-        st.caption("Admin only")
+        st.error("ADMIN CONTROLS — not visible to other roles")
+        st.markdown("**AI Engine**")
         label = "Disable AI" if s["ai_enabled"] else "Enable AI"
-        if st.button(label, type="primary"):
+        if st.button(label, type="primary", key="admin_toggle_ai"):
             simulator.toggle_ai()
             st.rerun()
-        if st.button("Force Optimization Cycle"):
+        if st.button("Force Optimization Cycle", key="admin_force"):
             result = simulator.force_cycle()
             st.success(result["last_ai_action"])
             time.sleep(0.35)
             st.rerun()
         st.info(f"**Last action**\n\n{s['last_ai_action']}")
+        st.markdown("---")
+        st.markdown("**System overrides**")
+        st.checkbox("Allow manual signal override", value=True, key="admin_override")
+        st.checkbox("Broadcast network alert", value=False, key="admin_broadcast")
+        st.caption("These switches are Admin-only.")
 
     elif role == "Emergency":
-        st.markdown("### Priority Routing")
-        st.warning("EMERGENCY MODE")
+        st.warning("EMERGENCY CONTROLS — not visible to Admin/Planner/Viewer")
+        st.markdown("**Priority Routing**")
         route = st.selectbox("Corridor", [
             "Route 7 — Central Hospital Corridor",
             "I-95 Express — Northbound Priority",
             "Downtown Grid — Sector A",
             "Airport Access — Terminal 3",
-        ])
+        ], key="em_route")
         gw = status_data["green_wave"]
         if gw["active"]:
             m, sec = divmod(gw["remaining_seconds"], 60)
             st.success(f"🟢 Green Wave ACTIVE · {m}m {sec:02d}s left")
             st.progress(max(0, 1 - gw["remaining_seconds"] / 252))
         else:
-            if st.button("⚡ TRIGGER GREEN WAVE", type="primary"):
+            if st.button("⚡ TRIGGER GREEN WAVE", type="primary", key="em_gw"):
                 result = simulator.trigger_green_wave(route)
                 if result.get("ok"):
                     st.success("Green Wave started")
@@ -331,16 +351,21 @@ with right:
                     st.rerun()
                 else:
                     st.error(result.get("message", "Failed"))
+        st.markdown("---")
+        st.markdown("**Incident notes**")
+        st.text_area("Dispatch note", placeholder="Ambulance en route…", key="em_note")
+        st.caption("Emergency-only panel.")
 
     elif role == "Planner":
-        st.markdown("### Policy Simulator")
+        st.info("PLANNER CONTROLS — analytics only")
+        st.markdown("**Policy Simulator**")
         policy = st.selectbox("Policy", [
             "Peak Hour Aggressive",
             "Nighttime Eco Mode",
             "Event Overflow Protocol",
             "Custom Scenario",
-        ])
-        if st.button("Run Simulation", type="primary"):
+        ], key="pl_policy")
+        if st.button("Run Simulation", type="primary", key="pl_run"):
             result = simulator.run_policy_sim(policy)
             level = result["level"]
             if level == "success":
@@ -349,20 +374,27 @@ with right:
                 st.warning(result["message"])
             else:
                 st.info(result["message"])
-        st.markdown("#### 24h Congestion")
+        st.markdown("**24h Congestion trend**")
         chart_df = pd.DataFrame({
             "Hour": ["00", "04", "08", "12", "16", "20", "24"],
             "Congestion": [0.22, 0.18, 0.41, 0.55, 0.48, 0.35, 0.28],
         }).set_index("Hour")
         st.line_chart(chart_df, color="#58A6FF")
+        st.markdown("---")
+        st.metric("Projected annual delay saved", "22,100 hrs")
+        st.caption("Planner-only analytics.")
 
     else:
-        st.markdown("### Viewer Access")
+        st.markdown("**VIEWER — no control panel**")
         st.info(
-            "View-only mode.\n\n"
-            "You can see maps, cameras, KPIs, and alerts.\n\n"
-            "AI controls and emergency tools are restricted."
+            "You are logged in as **Viewer**.\n\n"
+            "• Maps, cameras, KPIs: visible\n"
+            "• AI engine: hidden\n"
+            "• Green Wave: hidden\n"
+            "• Policy simulator: hidden\n\n"
+            "Sign out and login as admin / emergency / planner to use controls."
         )
+        st.caption("This empty control box proves role restrictions work.")
 
 st.divider()
 if role in ("Admin", "Planner", "Emergency"):
