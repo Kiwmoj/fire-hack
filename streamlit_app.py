@@ -149,7 +149,7 @@ with cam1:
     st.markdown("**Cam 01 · I-235 Des Moines (Iowa DOT)**")
     st.image(
         f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg?t={_ts}",
-        use_container_width=True,
+        use_column_width=True,
         caption="Live public traffic camera"
     )
     st.caption("🔴 Live · Iowa DOT")
@@ -158,7 +158,7 @@ with cam2:
     st.markdown("**Cam 07 · I-80 Iowa (Iowa DOT)**")
     st.image(
         f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg?t={_ts}",
-        use_container_width=True,
+        use_column_width=True,
         caption="Live public traffic camera"
     )
     st.caption("🟢 Live · Iowa DOT")
@@ -167,7 +167,7 @@ with cam3:
     st.markdown("**Cam 12 · US-20 Dubuque (Iowa DOT)**")
     st.image(
         f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg?t={_ts}",
-        use_container_width=True,
+        use_column_width=True,
         caption="Live public traffic camera"
     )
     st.caption("🟡 Live · Iowa DOT")
