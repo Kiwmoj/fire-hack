@@ -135,44 +135,55 @@ st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severi
 
 
 # ──────────────────────────────────────────────
-# LIVE CAMERA FEEDS (Public traffic camera snapshots)
+# LIVE CAMERA FEEDS – World / State selector
 # ──────────────────────────────────────────────
 st.subheader("Live Camera Feeds")
-st.caption("Public DOT traffic cameras · Images refresh every ~30–60 seconds")
+st.caption("Public government traffic cameras · Snapshots refresh ~30–60s")
 
-# Cache-busting timestamp so browsers reload the images
+CAMERA_CATALOG = {
+    "Iowa, USA": [
+        ("I-235 @ E 14th St, Des Moines", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg"),
+        ("I-80 @ MM 71.7", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg"),
+        ("US-20 @ Dubuque", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg"),
+        ("I-80 Rest Area near Davenport", "https://atmsqf.iowadot.gov/snapshots/Public/RestAreas/RA80EB300-01-CENTER.jpg"),
+    ],
+    "Virginia, USA": [
+        ("I-64 / MM 238.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads877.flv.png"),
+        ("I-64 / MM 237.8 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads878.flv.png"),
+        ("I-64 / MM 236.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads881.flv.png"),
+        ("Settlers Landing / I-64", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads887.flv.png"),
+    ],
+    "California, USA": [
+        ("US-101 at Ventura Blvd", "https://cwwp2.dot.ca.gov/data/d7/cctv/image/us101atventurabl/us101atventurabl.jpg"),
+    ],
+    "World overview (mixed)": [
+        ("Iowa · I-235 Des Moines", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg"),
+        ("Virginia · I-64 Hampton Roads", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads877.flv.png"),
+        ("Iowa · I-80", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg"),
+        ("Virginia · I-64 corridor", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads881.flv.png"),
+    ],
+}
+
+region = st.selectbox(
+    "Select region / state",
+    list(CAMERA_CATALOG.keys()),
+    index=0,
+)
+
 _ts = int(time.time())
+cams = CAMERA_CATALOG[region]
 
-cam1, cam2, cam3 = st.columns(3)
+cols = st.columns(len(cams))
+for col, (name, url) in zip(cols, cams):
+    with col:
+        st.markdown(f"**{name}**")
+        try:
+            st.image(f"{url}?t={_ts}", use_column_width=True, caption="Live public camera")
+        except Exception:
+            st.warning("Camera temporarily offline")
+        st.caption(f"📍 {region}")
 
-with cam1:
-    st.markdown("**Cam 01 · I-235 Des Moines (Iowa DOT)**")
-    st.image(
-        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg?t={_ts}",
-        use_column_width=True,
-        caption="Live public traffic camera"
-    )
-    st.caption("🔴 Live · Iowa DOT")
-
-with cam2:
-    st.markdown("**Cam 07 · I-80 Iowa (Iowa DOT)**")
-    st.image(
-        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg?t={_ts}",
-        use_column_width=True,
-        caption="Live public traffic camera"
-    )
-    st.caption("🟢 Live · Iowa DOT")
-
-with cam3:
-    st.markdown("**Cam 12 · US-20 Dubuque (Iowa DOT)**")
-    st.image(
-        f"https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg?t={_ts}",
-        use_column_width=True,
-        caption="Live public traffic camera"
-    )
-    st.caption("🟡 Live · Iowa DOT")
-
-st.caption("These are real public government traffic cameras. Click **↻ Refresh Data** in the sidebar to update the images.")
+st.caption("Sources: public government DOT camera snapshots. Click **↻ Refresh Data** to reload. Some feeds may go offline temporarily.")
 
 
 # ──────────────────────────────────────────────
@@ -293,6 +304,6 @@ if not log_df.empty:
     )
 
 st.caption(
-    f"SignalSentinel AI v2.8  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v2.9  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
