@@ -1,71 +1,93 @@
 # SignalSentinel AI
 
-**Hybrid traffic management & analytics system** for national / multi-city networks.
+**AI-powered traffic signal optimization and emergency priority routing for multi-city networks.**
 
-Pure **Python** implementation using **Streamlit**.
+Built for hackathon demo · Pure Python · Streamlit
 
-Real-time IoT sensor data + AI/ML signal optimization with human-in-the-loop controls for administrators, emergency services, and urban planners.
+---
 
-## Features
+## Problem
 
-| Role | Capabilities |
-|------|--------------|
-| **System Administrator** | Full access, AI engine control, manual overrides, system health |
-| **Emergency Services** | Trigger **Green Wave** priority routing |
-| **Urban Planner** | Performance reports, policy simulation |
+Urban congestion wastes time and fuel. Emergency vehicles lose critical minutes waiting at red lights. Static signal timing cannot adapt to live traffic.
 
-### Core Flows
-1. Live traffic heatmaps + system status dashboard
-2. AI detects congestion → automatically adjusts signal timings
-3. Emergency services trigger Green Wave priority corridors
-4. Planners review analytics and test optimization policies
+## Solution
 
-## Tech Stack
+SignalSentinel AI uses simulated IoT sensor data and an AI engine to:
 
-- **Language**: Python 3.12
-- **UI**: Streamlit (pure Python, no HTML/JS required)
-- **Data**: pandas + numpy
-- **Simulation**: Custom Python traffic & AI engine
+1. **Optimize signal timing** dynamically across the network  
+2. **Trigger Green Wave corridors** for emergency vehicles  
+3. **Give planners** policy simulation and impact metrics  
+4. **Keep humans in control** with role-based admin overrides  
 
-## Quick Start
+## Architecture
+
+```
+IoT Sensors  →  AI Optimization Engine  →  Signal Controllers
+                                              ↓
+                                      Command Dashboard
+```
+
+Human operators (Admin / Emergency / Planner) can always override.
+
+## Demo accounts
+
+| Username   | Password       | Role       | What you can do                          |
+|------------|----------------|------------|------------------------------------------|
+| `admin`    | `admin123`     | Admin      | Toggle AI, force optimization cycles     |
+| `emergency`| `emergency123` | Emergency  | Trigger Green Wave priority routing       |
+| `planner`  | `planner123`   | Planner    | Run policy sims, view impact metrics     |
+| `viewer`   | `viewer123`    | Viewer     | View-only maps, cameras, KPIs, alerts    |
+
+## Suggested 2-minute demo path
+
+1. Login as **`emergency` / `emergency123`**  
+2. Trigger **Green Wave** on a corridor → show countdown + alert  
+3. **Sign out** → login as **`admin` / `admin123`**  
+4. **Force Optimization Cycle** → show AI action log update  
+5. Open **Planner** account → show impact metrics (delay/fuel saved)
+
+## Run locally
 
 ```bash
-# 1. Clone
 git clone https://github.com/Kiwmoj/fire-hack.git
 cd fire-hack
+python -m venv .venv
 
-# 2. Create virtualenv
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+# Windows
+.venv\Scripts\activate
 
-# 3. Install dependencies
+# macOS / Linux
+source .venv/bin/activate
+
 pip install -r requirements.txt
-
-# 4. Run the dashboard
 streamlit run streamlit_app.py
 ```
 
-Open the URL shown in the terminal (usually **http://localhost:8501**)
+Open the URL shown in the terminal (usually `http://localhost:8501`).
 
-## Project Structure
+## Features
 
-```
-fire-hack/
-├── streamlit_app.py        # Main Streamlit dashboard (pure Python)
-├── services/
-│   └── simulator.py        # Traffic / AI / Green Wave simulation
-├── requirements.txt
-├── .gitignore
-└── README.md
-```
+- Secure login with role-based access  
+- Live KPI strip + demo impact metrics  
+- Interactive traffic map  
+- Public DOT camera snapshots (Iowa / Virginia) + US 511 links  
+- Sector congestion heatmap  
+- Admin AI engine controls  
+- Emergency Green Wave routing  
+- Planner policy simulator  
+- Optional auto-refresh every 5 seconds  
 
-## Design
+## Tech stack
 
-Dark Command & Control aesthetic:
-- Background `#0D1117`
-- Cards `#1F2937`
-- Accent `#3B82F6`
+- Python 3  
+- Streamlit  
+- Pandas / NumPy  
+- In-memory traffic simulator (`services/simulator.py`)  
 
-## License
+## Note on cameras
 
-MIT
+Public government cameras are **snapshot images** (updated on the server every ~30–60s), not continuous video streams. Click **Refresh** or enable auto-refresh to load the latest frame. For full state camera maps, use the **All US 511 maps** tab.
+
+---
+
+**SignalSentinel AI** — hybrid human + AI traffic command for safer, faster cities.
