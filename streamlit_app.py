@@ -12,9 +12,6 @@ import numpy as np
 
 from services.simulator import simulator
 
-# ──────────────────────────────────────────────
-# Page config
-# ──────────────────────────────────────────────
 st.set_page_config(
     page_title="SignalSentinel AI",
     page_icon="🚦",
@@ -22,7 +19,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Clean dark theme
 st.markdown("""
 <style>
     .stApp { background-color: #0D1117; color: #E5E7EB; }
@@ -50,56 +46,32 @@ st.markdown("""
 
 
 def generate_map_points(n=80):
-    """Generate simulated traffic sensor points around a city center."""
     center_lat, center_lon = 40.7580, -73.9855
-
     lats = center_lat + np.random.normal(0, 0.04, n)
     lons = center_lon + np.random.normal(0, 0.05, n)
-
     congestion = np.random.choice(["Free", "Moderate", "Heavy"], n, p=[0.55, 0.30, 0.15])
     size = np.where(congestion == "Heavy", 80, np.where(congestion == "Moderate", 50, 30))
-
-    return pd.DataFrame({
-        "lat": lats,
-        "lon": lons,
-        "congestion": congestion,
-        "size": size
-    })
+    return pd.DataFrame({"lat": lats, "lon": lons, "congestion": congestion, "size": size})
 
 
-# ──────────────────────────────────────────────
-# Sidebar
-# ──────────────────────────────────────────────
 with st.sidebar:
     st.title("🚦 SignalSentinel AI")
     st.caption("National Traffic Command")
-
-    role = st.radio(
-        "Operator Role",
-        ["Admin", "Emergency", "Planner"],
-        index=0
-    )
-
+    role = st.radio("Operator Role", ["Admin", "Emergency", "Planner"], index=0)
     st.divider()
-
     status_data = simulator.get_status()
     s = status_data["status"]
     k = status_data["kpis"]
-
     st.subheader("System Health")
     st.metric("Active Sensors", f"{s['active_sensors']:,}")
     st.metric("Signal Nodes", f"{s['signal_nodes']:,}")
     st.metric("AI Latency", f"{s['ai_latency_ms']} ms")
     st.metric("Uptime", f"{s['uptime_pct']}%")
-
     st.divider()
     if st.button("↻ Refresh Data"):
         st.rerun()
 
 
-# ──────────────────────────────────────────────
-# Header
-# ──────────────────────────────────────────────
 col1, col2 = st.columns([4, 1])
 with col1:
     st.title("Command & Control")
@@ -108,10 +80,6 @@ with col2:
     ai_label = "🟢 AUTO" if s["ai_enabled"] else "🔴 OFF"
     st.metric("AI Engine", ai_label)
 
-
-# ──────────────────────────────────────────────
-# KPIs
-# ──────────────────────────────────────────────
 st.subheader("Network KPIs")
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Avg Travel Time", f"{k['avg_travel_time_min']} min", f"{k['avg_travel_delta_pct']}%")
@@ -121,87 +89,129 @@ c4.metric("Emergency Response", f"{k['emergency_response_min']} min")
 
 st.divider()
 
-
-# ──────────────────────────────────────────────
-# LIVE MAP
-# ──────────────────────────────────────────────
 st.subheader("Live Traffic Map")
 st.caption("Real-time sensor locations · Point size indicates congestion severity")
-
 map_df = generate_map_points(90)
 st.map(map_df, size="size", zoom=11, use_container_width=True)
-
 st.caption("🟢 Free   🟡 Moderate   🔴 Heavy  (point size indicates severity)")
 
 
-# ──────────────────────────────────────────────
-# LIVE CAMERA FEEDS – World / State selector
-# ──────────────────────────────────────────────
-st.subheader("Live Camera Feeds")
-st.caption("Public government traffic cameras · Snapshots refresh ~30–60s")
+# LIVE CAMERA FEEDS – United States
+st.subheader("Live Camera Feeds – United States")
+st.caption("Public government traffic cameras · Official 511 links for every state")
 
 CAMERA_CATALOG = {
-    "Iowa, USA": [
+    "Iowa": [
         ("I-235 @ E 14th St, Des Moines", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg"),
         ("I-80 @ MM 71.7", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg"),
         ("US-20 @ Dubuque", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dqtv17lb.jpeg"),
         ("I-80 Rest Area near Davenport", "https://atmsqf.iowadot.gov/snapshots/Public/RestAreas/RA80EB300-01-CENTER.jpg"),
     ],
-    "Virginia, USA": [
+    "Virginia": [
         ("I-64 / MM 238.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads877.flv.png"),
         ("I-64 / MM 237.8 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads878.flv.png"),
         ("I-64 / MM 236.4 EB", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads881.flv.png"),
         ("Settlers Landing / I-64", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads887.flv.png"),
     ],
-    "California, USA": [
+    "California": [
         ("US-101 at Ventura Blvd", "https://cwwp2.dot.ca.gov/data/d7/cctv/image/us101atventurabl/us101atventurabl.jpg"),
-    ],
-    "World overview (mixed)": [
-        ("Iowa · I-235 Des Moines", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/dmtv05hd.jpeg"),
-        ("Virginia · I-64 Hampton Roads", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads877.flv.png"),
-        ("Iowa · I-80", "https://atmsqf.iowadot.gov/SNAPSHOTS/PUBLIC/Metro/80tv072hd.jpeg"),
-        ("Virginia · I-64 corridor", "https://snapshot.vdotcameras.com/thumbs/HamptonRoads881.flv.png"),
     ],
 }
 
-region = st.selectbox(
-    "Select region / state",
-    list(CAMERA_CATALOG.keys()),
-    index=0,
-)
+STATE_511 = {
+    "Alabama": "https://www.algotraffic.com/",
+    "Alaska": "https://511.alaska.gov/",
+    "Arizona": "https://az511.gov/",
+    "Arkansas": "https://www.idrivearkansas.com/",
+    "California": "https://cwwp2.dot.ca.gov/vm/streamlist.htm",
+    "Colorado": "https://www.cotrip.org/",
+    "Connecticut": "https://cttraffic.com/",
+    "Delaware": "https://deldot.gov/trafficcameras/",
+    "Florida": "https://fl511.com/",
+    "Georgia": "https://511ga.org/",
+    "Hawaii": "https://hawaii511.com/",
+    "Idaho": "https://511.idaho.gov/",
+    "Illinois": "https://www.gettingaroundillinois.com/",
+    "Indiana": "https://indot.carsprogram.org/",
+    "Iowa": "https://511ia.org/",
+    "Kansas": "https://www.kandrive.org/",
+    "Kentucky": "https://goky.ky.gov/",
+    "Louisiana": "https://www.511la.org/",
+    "Maine": "https://www.maine.gov/mdot/trafficcameras/",
+    "Maryland": "https://chart.maryland.gov/",
+    "Massachusetts": "https://www.mass511.com/",
+    "Michigan": "https://www.michigan.gov/mdot/travel/cameras",
+    "Minnesota": "https://www.511mn.org/",
+    "Mississippi": "https://www.mdottraffic.com/",
+    "Missouri": "https://www.traveler.modot.org/",
+    "Montana": "https://www.mdt.mt.gov/travinfo/",
+    "Nebraska": "https://www.511.nebraska.gov/",
+    "Nevada": "https://www.nvroads.com/",
+    "New Hampshire": "https://www.nh.gov/dot/travel/",
+    "New Jersey": "https://www.511nj.org/",
+    "New Mexico": "https://nmroads.com/",
+    "New York": "https://www.511ny.org/",
+    "North Carolina": "https://drivenc.gov/",
+    "North Dakota": "https://www.dot.nd.gov/travel-info/",
+    "Ohio": "https://www.ohgo.com/",
+    "Oklahoma": "https://oktraffic.org/",
+    "Oregon": "https://www.tripcheck.com/",
+    "Pennsylvania": "https://www.511pa.com/",
+    "Rhode Island": "https://www.dot.ri.gov/travel/",
+    "South Carolina": "https://www.511sc.org/",
+    "South Dakota": "https://www.sd511.org/",
+    "Tennessee": "https://www.tn511.com/",
+    "Texas": "https://www.txdot.gov/discover/live-traffic-cameras.html",
+    "Utah": "https://www.udottraffic.utah.gov/",
+    "Vermont": "https://www.vtrans.vermont.gov/travel/",
+    "Virginia": "https://www.511virginia.org/",
+    "Washington": "https://www.wsdot.com/traffic/cameras/",
+    "West Virginia": "https://www.wv511.org/",
+    "Wisconsin": "https://www.511wi.gov/",
+    "Wyoming": "https://www.wyoroad.info/",
+    "Washington DC": "https://go.dc.gov/",
+}
 
-_ts = int(time.time())
-cams = CAMERA_CATALOG[region]
+tab1, tab2 = st.tabs(["Live snapshots (working feeds)", "All 50 states + DC (official 511 maps)"])
 
-cols = st.columns(len(cams))
-for col, (name, url) in zip(cols, cams):
-    with col:
-        st.markdown(f"**{name}**")
-        try:
-            st.image(f"{url}?t={_ts}", use_column_width=True, caption="Live public camera")
-        except Exception:
-            st.warning("Camera temporarily offline")
-        st.caption(f"📍 {region}")
+with tab1:
+    region = st.selectbox("Select state with live snapshots", list(CAMERA_CATALOG.keys()), index=0, key="snap_region")
+    _ts = int(time.time())
+    cams = CAMERA_CATALOG[region]
+    cols = st.columns(min(4, len(cams)))
+    for i, (name, url) in enumerate(cams):
+        with cols[i % len(cols)]:
+            st.markdown(f"**{name}**")
+            try:
+                st.image(f"{url}?t={_ts}", use_column_width=True, caption="Live public camera")
+            except Exception:
+                st.warning("Camera temporarily offline")
+            st.caption(f"📍 {region}")
+    st.caption("Click **↻ Refresh Data** in the sidebar to reload the latest images.")
 
-st.caption("Sources: public government DOT camera snapshots. Click **↻ Refresh Data** to reload. Some feeds may go offline temporarily.")
+with tab2:
+    st.markdown("Open the official state traffic camera / 511 map for any state:")
+    states = list(STATE_511.keys())
+    n_cols = 4
+    for i in range(0, len(states), n_cols):
+        row_states = states[i:i+n_cols]
+        row_cols = st.columns(n_cols)
+        for col, state in zip(row_cols, row_states):
+            with col:
+                st.markdown(f"[{state}]({STATE_511[state]})")
+    st.info("These are the official government traffic camera pages for every US state and DC. Click any state to open its live cameras.")
 
 
-# ──────────────────────────────────────────────
-# Main area
-# ──────────────────────────────────────────────
 left, right = st.columns([2, 1])
 
 with left:
     st.subheader("Sector Heatmap Grid")
-
     heatmap_data = simulator.get_heatmap(cols=12, rows=8)
     cells = heatmap_data["cells"]
-
     grid = np.zeros((8, 12))
     for cell in cells:
         val = {"free": 0.25, "moderate": 0.6, "heavy": 0.95}.get(cell["state"], 0.3)
         grid[cell["r"] % 8, cell["c"] % 12] = val
-
     rows = []
     for r in range(8):
         row = []
@@ -214,10 +224,8 @@ with left:
             else:
                 row.append("🟢")
         rows.append(row)
-
     df_heat = pd.DataFrame(rows, columns=[f"S{c+1}" for c in range(12)])
     st.dataframe(df_heat, use_container_width=True, hide_index=True, height=260)
-
     st.subheader("Active Alerts")
     for a in status_data["alerts"]:
         icon = {"critical": "🔴", "warn": "🟡", "info": "🔵"}.get(a["level"], "⚪")
@@ -236,7 +244,6 @@ with right:
             time.sleep(0.4)
             st.rerun()
         st.info(f"**Last Action**\n\n{s['last_ai_action']}")
-
     elif role == "Emergency":
         st.subheader("Priority Routing")
         st.warning("EMERGENCY MODE")
@@ -260,7 +267,6 @@ with right:
                     st.rerun()
                 else:
                     st.error(result.get("message", "Failed"))
-
     elif role == "Planner":
         st.subheader("Policy Simulator")
         policy = st.selectbox("Policy", [
@@ -277,7 +283,6 @@ with right:
                 st.warning(result["message"])
             else:
                 st.info(result["message"])
-
         st.subheader("Performance (24h)")
         chart_df = pd.DataFrame({
             "Hour": ["00", "04", "08", "12", "16", "20", "24"],
@@ -288,22 +293,13 @@ with right:
         m1.metric("Delay Saved", "1,847 hrs")
         m2.metric("Fuel Saved", "42.3k L")
 
-
-# ──────────────────────────────────────────────
-# AI Log
-# ──────────────────────────────────────────────
 st.divider()
 st.subheader("AI Actions Log")
 log_df = pd.DataFrame(status_data["ai_log"])
 if not log_df.empty:
-    st.dataframe(
-        log_df[["time", "title", "detail"]],
-        use_container_width=True,
-        hide_index=True,
-        height=200
-    )
+    st.dataframe(log_df[["time", "title", "detail"]], use_container_width=True, hide_index=True, height=200)
 
 st.caption(
-    f"SignalSentinel AI v2.9  ·  Latency {s['ai_latency_ms']}ms  ·  "
+    f"SignalSentinel AI v3.0  ·  Latency {s['ai_latency_ms']}ms  ·  "
     f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
