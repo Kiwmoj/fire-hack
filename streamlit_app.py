@@ -27,48 +27,102 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    .stApp { background-color: #0D1117; color: #E5E7EB; }
-    h1, h2, h3, h4 { color: #E5E7EB !important; letter-spacing: -0.02em; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .stApp {
+        background: linear-gradient(165deg, #0A0E14 0%, #0D1117 40%, #111820 100%);
+        color: #E6EDF3;
+    }
+
+    h1, h2, h3, h4 {
+        color: #F0F6FC !important;
+        letter-spacing: -0.03em;
+        font-weight: 700 !important;
+    }
+
     .stMetric {
-        background-color: #161B22;
-        border: 1px solid #30363D;
-        border-radius: 10px;
-        padding: 12px 16px;
-    }
-    div[data-testid="stMetricValue"] { color: #F0F6FC !important; font-size: 1.35rem !important; font-weight: 600 !important; }
-    div[data-testid="stMetricLabel"] { color: #8B949E !important; }
-    .stButton > button {
-        background-color: #238636;
-        color: white;
-        border: 1px solid #2EA043;
-        border-radius: 8px;
-        font-weight: 600;
-        width: 100%;
-        padding: 0.5rem 1rem;
-    }
-    .stButton > button:hover { background-color: #2EA043; border-color: #3FB950; color: white; }
-    div[data-testid="stSidebar"] {
-        background-color: #010409;
-        border-right: 1px solid #21262D;
-    }
-    .block-container { padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1400px; }
-    [data-testid="stForm"] {
-        background: #161B22;
+        background: linear-gradient(180deg, #161B22 0%, #12171E 100%);
         border: 1px solid #30363D;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 14px 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
+    div[data-testid="stMetricValue"] {
+        color: #F0F6FC !important;
+        font-size: 1.45rem !important;
+        font-weight: 700 !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        color: #8B949E !important;
+        font-weight: 500 !important;
+    }
+
+    .stButton > button {
+        background: linear-gradient(180deg, #238636 0%, #1A7F37 100%);
+        color: white !important;
+        border: 1px solid #2EA043;
+        border-radius: 10px;
+        font-weight: 600;
+        width: 100%;
+        padding: 0.55rem 1rem;
+        box-shadow: 0 2px 8px rgba(35, 134, 54, 0.25);
+    }
+    .stButton > button:hover {
+        background: linear-gradient(180deg, #2EA043 0%, #238636 100%);
+        border-color: #3FB950;
+        color: white !important;
+    }
+
+    div[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #010409 0%, #0D1117 100%);
+        border-right: 1px solid #21262D;
+    }
+
+    .block-container {
+        padding-top: 1.75rem;
+        padding-bottom: 2.5rem;
+        max-width: 1380px;
+    }
+
+    [data-testid="stForm"] {
+        background: linear-gradient(180deg, #161B22 0%, #12171E 100%);
+        border: 1px solid #30363D;
+        border-radius: 16px;
+        padding: 1.75rem;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
     .ss-badge {
         display: inline-block;
-        background: #1F6FEB33;
-        color: #58A6FF;
-        border: 1px solid #1F6FEB66;
+        background: linear-gradient(135deg, rgba(31,111,235,0.25), rgba(88,166,255,0.12));
+        color: #79C0FF;
+        border: 1px solid rgba(88,166,255,0.35);
         border-radius: 999px;
-        padding: 0.15rem 0.75rem;
-        font-size: 0.8rem;
+        padding: 0.3rem 1rem;
+        font-size: 0.78rem;
         font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
     }
-    hr { border-color: #21262D !important; }
+    .ss-role-banner {
+        border-left: 3px solid #58A6FF;
+        border-radius: 0 10px 10px 0;
+        padding: 0.65rem 1rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, rgba(88,166,255,0.12), transparent);
+    }
+    .ss-role-admin { border-left-color: #F85149; background: linear-gradient(90deg, rgba(248,81,73,0.12), transparent); }
+    .ss-role-emergency { border-left-color: #D29922; background: linear-gradient(90deg, rgba(210,153,34,0.12), transparent); }
+    .ss-role-planner { border-left-color: #58A6FF; background: linear-gradient(90deg, rgba(88,166,255,0.12), transparent); }
+    .ss-role-viewer { border-left-color: #8B949E; background: linear-gradient(90deg, rgba(139,148,158,0.1), transparent); }
+
+    hr { border-color: #21262D !important; margin: 1.25rem 0 !important; }
+    #MainMenu { visibility: hidden; }
+    footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -99,22 +153,22 @@ if "logged_in" not in st.session_state:
 
 if not st.session_state.logged_in:
     st.markdown("<br><br>", unsafe_allow_html=True)
-    _, center, _ = st.columns([1, 1.3, 1])
+    _, center, _ = st.columns([0.9, 1.4, 0.9])
     with center:
         st.markdown("# 🚦 SignalSentinel AI")
+        st.markdown('<div style="text-align:center"><span class="ss-badge">National Traffic Command</span></div>', unsafe_allow_html=True)
+        st.markdown("")
         st.markdown(
-            '<span class="ss-badge">NATIONAL TRAFFIC COMMAND</span>',
+            "<p style='text-align:center;color:#8B949E;font-size:1.05rem;line-height:1.5;'>"
+            "AI-powered signal optimization and emergency priority routing<br>"
+            "for multi-city traffic networks."
+            "</p>",
             unsafe_allow_html=True,
         )
         st.markdown("")
-        st.markdown(
-            "AI-powered signal optimization and emergency priority routing "
-            "for multi-city traffic networks."
-        )
-        st.divider()
 
         with st.form("login_form"):
-            st.markdown("#### Sign in")
+            st.markdown("#### Sign in to continue")
             username = st.text_input("Username", placeholder="admin")
             password = st.text_input("Password", type="password", placeholder="••••••••")
             submitted = st.form_submit_button("Sign In →", use_container_width=True)
@@ -127,21 +181,23 @@ if not st.session_state.logged_in:
                     st.session_state.username = username.strip().lower()
                     st.session_state.display_name = user["name"]
                     st.success(f"Welcome, {user['name']}")
-                    time.sleep(0.35)
+                    time.sleep(0.3)
                     st.rerun()
                 else:
                     st.error("Invalid username or password")
 
         st.markdown("")
-        st.markdown("**Demo accounts for judges**")
-        st.markdown("""
-| User | Password | Role |
-|------|----------|------|
-| `admin` | `admin123` | Full control + AI |
-| `emergency` | `emergency123` | Green Wave routing |
-| `planner` | `planner123` | Analytics & impact |
-| `viewer` | `viewer123` | View only |
-""")
+        st.markdown(
+            "<p style='text-align:center;color:#8B949E;font-size:0.9rem;font-weight:600;'>Demo accounts</p>",
+            unsafe_allow_html=True,
+        )
+        a, b = st.columns(2)
+        with a:
+            st.markdown("`admin` / `admin123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Full AI control</span>", unsafe_allow_html=True)
+            st.markdown("`emergency` / `emergency123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Green Wave</span>", unsafe_allow_html=True)
+        with b:
+            st.markdown("`planner` / `planner123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Analytics</span>", unsafe_allow_html=True)
+            st.markdown("`viewer` / `viewer123`  \n<span style='color:#8B949E;font-size:0.8rem;'>View only</span>", unsafe_allow_html=True)
     st.stop()
 
 
@@ -176,34 +232,30 @@ with st.sidebar:
 
     st.divider()
     st.markdown("#### Architecture")
-    st.markdown("""
-```
-IoT Sensors
-    ↓
-AI Optimization Engine
-    ↓
-Signal Controllers
-    ↓
-Command Dashboard
-```
-""")
-    st.caption("Real-time loop · Human override always available")
+    st.code(
+        "IoT Sensors\n    ↓\nAI Optimization Engine\n    ↓\nSignal Controllers\n    ↓\nCommand Dashboard",
+        language=None,
+    )
+    st.caption("Human override always available")
 
 
 ROLE_META = {
-    "Admin": ("🔴 ADMIN", "Full system control · AI engine · manual overrides"),
-    "Emergency": ("🟠 EMERGENCY", "Priority routing · Green Wave corridors"),
-    "Planner": ("🔵 PLANNER", "Analytics · policy simulation · impact reports"),
-    "Viewer": ("⚪ VIEWER", "Read-only dashboard · no control actions"),
+    "Admin": ("🔴 ADMIN ACCESS", "Full system control · AI engine · manual overrides", "ss-role-admin"),
+    "Emergency": ("🟠 EMERGENCY ACCESS", "Priority routing · Green Wave corridors", "ss-role-emergency"),
+    "Planner": ("🔵 PLANNER ACCESS", "Analytics · policy simulation · impact reports", "ss-role-planner"),
+    "Viewer": ("⚪ VIEWER ACCESS", "Read-only dashboard · no control actions", "ss-role-viewer"),
 }
-badge, blurb = ROLE_META.get(role, ("ROLE", ""))
-st.markdown(f"### {badge}")
-st.caption(blurb)
+badge, blurb, css_cls = ROLE_META.get(role, ("ROLE", "", "ss-role-viewer"))
+st.markdown(
+    f'<div class="ss-role-banner {css_cls}"><strong>{badge}</strong><br>'
+    f'<span style="color:#8B949E;font-size:0.9rem;">{blurb}</span></div>',
+    unsafe_allow_html=True,
+)
 
 h1, h2 = st.columns([5, 1])
 with h1:
     st.markdown("# Command & Control")
-    st.caption(f"{st.session_state.display_name} · **{role}** · System Online · IoT Connected")
+    st.caption(f"{st.session_state.display_name}  ·  **{role}**  ·  System Online  ·  IoT Connected")
 with h2:
     st.metric("AI Engine", "🟢 AUTO" if s["ai_enabled"] else "🔴 OFF")
 
@@ -215,14 +267,15 @@ k3.metric("Signal Efficiency", f"{k['signal_efficiency_pct']}%")
 k4.metric("Emergency Response", f"{k['emergency_response_min']} min")
 
 if role in ("Admin", "Planner", "Emergency"):
-    st.markdown("### Demo Impact (simulated 30-day window)")
+    st.markdown("### Demo Impact")
+    st.caption("Simulated 30-day network window")
     i1, i2, i3, i4 = st.columns(4)
     i1.metric("Delay Hours Saved", "1,847", "+12%")
     i2.metric("Fuel Saved", "42.3k L", "+9%")
-    i3.metric("Emergency ETA Cut", "34%", "faster response")
+    i3.metric("Emergency ETA Cut", "34%", "faster")
     i4.metric("Signals Optimized", "47", "last cycle")
 else:
-    st.caption("Demo impact metrics are hidden for Viewer accounts.")
+    st.caption("Impact metrics hidden for Viewer accounts.")
 
 st.divider()
 
@@ -258,7 +311,7 @@ for idx, (state, cams) in enumerate(CAMERA_CATALOG.items()):
                 except Exception:
                     st.warning("Offline")
 with cam_tabs[-1]:
-    st.markdown("Official state traffic camera portals:")
+    st.markdown("Official state traffic camera portals")
     states_511 = {
         "California": "https://cwwp2.dot.ca.gov/vm/streamlist.htm",
         "Texas": "https://www.txdot.gov/discover/live-traffic-cameras.html",
@@ -271,12 +324,12 @@ with cam_tabs[-1]:
     }
     c = st.columns(4)
     for i, (name, url) in enumerate(states_511.items()):
-        c[i % 4].markdown(f"[{name}]({url})")
+        c[i % 4].markdown(f"**[{name}]({url})**")
     st.caption("Open any link for full state camera maps.")
 
 st.divider()
 
-left, right = st.columns([1.6, 1])
+left, right = st.columns([1.55, 1], gap="large")
 
 with left:
     st.markdown("### Sector Heatmap")
@@ -299,7 +352,7 @@ with left:
         hide_index=True,
         height=240,
     )
-    st.caption("🟢 Free · 🟡 Moderate · 🔴 Heavy")
+    st.caption("🟢 Free  ·  🟡 Moderate  ·  🔴 Heavy")
 
     st.markdown("### Active Alerts")
     for a in status_data["alerts"]:
@@ -310,7 +363,7 @@ with right:
     st.markdown(f"### Controls · {role}")
 
     if role == "Admin":
-        st.error("ADMIN CONTROLS — not visible to other roles")
+        st.error("ADMIN CONTROLS")
         st.markdown("**AI Engine**")
         label = "Disable AI" if s["ai_enabled"] else "Enable AI"
         if st.button(label, type="primary", key="admin_toggle_ai"):
@@ -319,17 +372,17 @@ with right:
         if st.button("Force Optimization Cycle", key="admin_force"):
             result = simulator.force_cycle()
             st.success(result["last_ai_action"])
-            time.sleep(0.35)
+            time.sleep(0.3)
             st.rerun()
         st.info(f"**Last action**\n\n{s['last_ai_action']}")
         st.markdown("---")
         st.markdown("**System overrides**")
         st.checkbox("Allow manual signal override", value=True, key="admin_override")
         st.checkbox("Broadcast network alert", value=False, key="admin_broadcast")
-        st.caption("These switches are Admin-only.")
+        st.caption("Admin-only switches")
 
     elif role == "Emergency":
-        st.warning("EMERGENCY CONTROLS — not visible to Admin/Planner/Viewer")
+        st.warning("EMERGENCY CONTROLS")
         st.markdown("**Priority Routing**")
         route = st.selectbox("Corridor", [
             "Route 7 — Central Hospital Corridor",
@@ -347,17 +400,17 @@ with right:
                 result = simulator.trigger_green_wave(route)
                 if result.get("ok"):
                     st.success("Green Wave started")
-                    time.sleep(0.5)
+                    time.sleep(0.4)
                     st.rerun()
                 else:
                     st.error(result.get("message", "Failed"))
         st.markdown("---")
         st.markdown("**Incident notes**")
         st.text_area("Dispatch note", placeholder="Ambulance en route…", key="em_note")
-        st.caption("Emergency-only panel.")
+        st.caption("Emergency-only panel")
 
     elif role == "Planner":
-        st.info("PLANNER CONTROLS — analytics only")
+        st.info("PLANNER CONTROLS")
         st.markdown("**Policy Simulator**")
         policy = st.selectbox("Policy", [
             "Peak Hour Aggressive",
@@ -382,19 +435,18 @@ with right:
         st.line_chart(chart_df, color="#58A6FF")
         st.markdown("---")
         st.metric("Projected annual delay saved", "22,100 hrs")
-        st.caption("Planner-only analytics.")
+        st.caption("Planner-only analytics")
 
     else:
         st.markdown("**VIEWER — no control panel**")
         st.info(
-            "You are logged in as **Viewer**.\n\n"
+            "Logged in as **Viewer**.\n\n"
             "• Maps, cameras, KPIs: visible\n"
             "• AI engine: hidden\n"
             "• Green Wave: hidden\n"
             "• Policy simulator: hidden\n\n"
-            "Sign out and login as admin / emergency / planner to use controls."
+            "Sign out and login as admin / emergency / planner for controls."
         )
-        st.caption("This empty control box proves role restrictions work.")
 
 st.divider()
 if role in ("Admin", "Planner", "Emergency"):
@@ -408,9 +460,9 @@ if role in ("Admin", "Planner", "Emergency"):
             height=180,
         )
 else:
-    st.caption("AI action log restricted · upgrade role for full access")
+    st.caption("AI action log restricted for Viewer accounts")
 
 st.caption(
-    f"SignalSentinel AI · {role} · latency {s['ai_latency_ms']}ms · "
-    f"{s['signal_nodes']:,} nodes · {datetime.utcnow().strftime('%H:%M:%S')} UTC"
+    f"SignalSentinel AI  ·  {role}  ·  {s['ai_latency_ms']}ms  ·  "
+    f"{s['signal_nodes']:,} nodes  ·  {datetime.utcnow().strftime('%H:%M:%S')} UTC"
 )
