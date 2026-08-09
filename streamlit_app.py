@@ -30,56 +30,56 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }
 
     .stApp {
-        background: linear-gradient(165deg, #0A0E14 0%, #0D1117 40%, #111820 100%);
-        color: #E6EDF3;
+        background: linear-gradient(160deg, #0B1D36 0%, #0F2744 35%, #123A5C 70%, #0E2A4A 100%) !important;
+        color: #E8F1FF !important;
     }
 
     h1, h2, h3, h4 {
-        color: #F0F6FC !important;
+        color: #F5FAFF !important;
         letter-spacing: -0.03em;
         font-weight: 700 !important;
     }
 
     .stMetric {
-        background: linear-gradient(180deg, #161B22 0%, #12171E 100%);
-        border: 1px solid #30363D;
-        border-radius: 12px;
-        padding: 14px 18px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        background: linear-gradient(180deg, #143A5F 0%, #102F4E 100%) !important;
+        border: 1px solid #2B6CB0 !important;
+        border-radius: 14px !important;
+        padding: 16px 18px !important;
+        box-shadow: 0 6px 20px rgba(15, 50, 100, 0.45) !important;
     }
     div[data-testid="stMetricValue"] {
-        color: #F0F6FC !important;
-        font-size: 1.45rem !important;
+        color: #FFFFFF !important;
+        font-size: 1.5rem !important;
         font-weight: 700 !important;
     }
     div[data-testid="stMetricLabel"] {
-        color: #8B949E !important;
+        color: #A8C5E8 !important;
         font-weight: 500 !important;
     }
 
     .stButton > button {
-        background: linear-gradient(180deg, #238636 0%, #1A7F37 100%);
+        background: linear-gradient(180deg, #2B6CB0 0%, #1E4E8C 100%) !important;
         color: white !important;
-        border: 1px solid #2EA043;
-        border-radius: 10px;
-        font-weight: 600;
-        width: 100%;
-        padding: 0.55rem 1rem;
-        box-shadow: 0 2px 8px rgba(35, 134, 54, 0.25);
+        border: 1px solid #4299E1 !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        padding: 0.6rem 1rem !important;
+        box-shadow: 0 4px 14px rgba(43, 108, 176, 0.4) !important;
     }
     .stButton > button:hover {
-        background: linear-gradient(180deg, #2EA043 0%, #238636 100%);
-        border-color: #3FB950;
+        background: linear-gradient(180deg, #4299E1 0%, #2B6CB0 100%) !important;
+        border-color: #63B3ED !important;
         color: white !important;
     }
 
     div[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #010409 0%, #0D1117 100%);
-        border-right: 1px solid #21262D;
+        background: linear-gradient(180deg, #071528 0%, #0B1D36 100%) !important;
+        border-right: 1px solid #1E4E8C !important;
     }
 
     .block-container {
@@ -89,40 +89,46 @@ st.markdown("""
     }
 
     [data-testid="stForm"] {
-        background: linear-gradient(180deg, #161B22 0%, #12171E 100%);
-        border: 1px solid #30363D;
-        border-radius: 16px;
-        padding: 1.75rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        background: linear-gradient(180deg, #143A5F 0%, #102F4E 100%) !important;
+        border: 1px solid #2B6CB0 !important;
+        border-radius: 16px !important;
+        padding: 1.75rem !important;
+        box-shadow: 0 10px 40px rgba(10, 40, 90, 0.5) !important;
     }
 
     .ss-badge {
         display: inline-block;
-        background: linear-gradient(135deg, rgba(31,111,235,0.25), rgba(88,166,255,0.12));
-        color: #79C0FF;
-        border: 1px solid rgba(88,166,255,0.35);
+        background: rgba(66, 153, 225, 0.25);
+        color: #90CDF4;
+        border: 1px solid rgba(144, 205, 244, 0.45);
         border-radius: 999px;
-        padding: 0.3rem 1rem;
+        padding: 0.35rem 1.1rem;
         font-size: 0.78rem;
         font-weight: 600;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
     }
     .ss-role-banner {
-        border-left: 3px solid #58A6FF;
-        border-radius: 0 10px 10px 0;
-        padding: 0.65rem 1rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(90deg, rgba(88,166,255,0.12), transparent);
+        border-left: 4px solid #4299E1;
+        border-radius: 0 12px 12px 0;
+        padding: 0.75rem 1.1rem;
+        margin-bottom: 1.1rem;
+        background: linear-gradient(90deg, rgba(66,153,225,0.18), transparent);
     }
-    .ss-role-admin { border-left-color: #F85149; background: linear-gradient(90deg, rgba(248,81,73,0.12), transparent); }
-    .ss-role-emergency { border-left-color: #D29922; background: linear-gradient(90deg, rgba(210,153,34,0.12), transparent); }
-    .ss-role-planner { border-left-color: #58A6FF; background: linear-gradient(90deg, rgba(88,166,255,0.12), transparent); }
-    .ss-role-viewer { border-left-color: #8B949E; background: linear-gradient(90deg, rgba(139,148,158,0.1), transparent); }
+    .ss-role-admin { border-left-color: #FC8181; background: linear-gradient(90deg, rgba(252,129,129,0.15), transparent); }
+    .ss-role-emergency { border-left-color: #F6AD55; background: linear-gradient(90deg, rgba(246,173,85,0.15), transparent); }
+    .ss-role-planner { border-left-color: #63B3ED; background: linear-gradient(90deg, rgba(99,179,237,0.18), transparent); }
+    .ss-role-viewer { border-left-color: #A0AEC0; background: linear-gradient(90deg, rgba(160,174,192,0.12), transparent); }
 
-    hr { border-color: #21262D !important; margin: 1.25rem 0 !important; }
+    hr { border-color: #1E4E8C !important; margin: 1.25rem 0 !important; }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
+
+    .stTextInput input, textarea {
+        background-color: #0F2744 !important;
+        color: #E8F1FF !important;
+        border-color: #2B6CB0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -159,7 +165,7 @@ if not st.session_state.logged_in:
         st.markdown('<div style="text-align:center"><span class="ss-badge">National Traffic Command</span></div>', unsafe_allow_html=True)
         st.markdown("")
         st.markdown(
-            "<p style='text-align:center;color:#8B949E;font-size:1.05rem;line-height:1.5;'>"
+            "<p style='text-align:center;color:#A8C5E8;font-size:1.05rem;line-height:1.5;'>"
             "AI-powered signal optimization and emergency priority routing<br>"
             "for multi-city traffic networks."
             "</p>",
@@ -188,16 +194,16 @@ if not st.session_state.logged_in:
 
         st.markdown("")
         st.markdown(
-            "<p style='text-align:center;color:#8B949E;font-size:0.9rem;font-weight:600;'>Demo accounts</p>",
+            "<p style='text-align:center;color:#A8C5E8;font-size:0.9rem;font-weight:600;'>Demo accounts</p>",
             unsafe_allow_html=True,
         )
         a, b = st.columns(2)
         with a:
-            st.markdown("`admin` / `admin123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Full AI control</span>", unsafe_allow_html=True)
-            st.markdown("`emergency` / `emergency123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Green Wave</span>", unsafe_allow_html=True)
+            st.markdown("`admin` / `admin123`  \n<span style='color:#A8C5E8;font-size:0.8rem;'>Full AI control</span>", unsafe_allow_html=True)
+            st.markdown("`emergency` / `emergency123`  \n<span style='color:#A8C5E8;font-size:0.8rem;'>Green Wave</span>", unsafe_allow_html=True)
         with b:
-            st.markdown("`planner` / `planner123`  \n<span style='color:#8B949E;font-size:0.8rem;'>Analytics</span>", unsafe_allow_html=True)
-            st.markdown("`viewer` / `viewer123`  \n<span style='color:#8B949E;font-size:0.8rem;'>View only</span>", unsafe_allow_html=True)
+            st.markdown("`planner` / `planner123`  \n<span style='color:#A8C5E8;font-size:0.8rem;'>Analytics</span>", unsafe_allow_html=True)
+            st.markdown("`viewer` / `viewer123`  \n<span style='color:#A8C5E8;font-size:0.8rem;'>View only</span>", unsafe_allow_html=True)
     st.stop()
 
 
@@ -248,7 +254,7 @@ ROLE_META = {
 badge, blurb, css_cls = ROLE_META.get(role, ("ROLE", "", "ss-role-viewer"))
 st.markdown(
     f'<div class="ss-role-banner {css_cls}"><strong>{badge}</strong><br>'
-    f'<span style="color:#8B949E;font-size:0.9rem;">{blurb}</span></div>',
+    f'<span style="color:#A8C5E8;font-size:0.9rem;">{blurb}</span></div>',
     unsafe_allow_html=True,
 )
 
@@ -432,7 +438,7 @@ with right:
             "Hour": ["00", "04", "08", "12", "16", "20", "24"],
             "Congestion": [0.22, 0.18, 0.41, 0.55, 0.48, 0.35, 0.28],
         }).set_index("Hour")
-        st.line_chart(chart_df, color="#58A6FF")
+        st.line_chart(chart_df, color="#63B3ED")
         st.markdown("---")
         st.metric("Projected annual delay saved", "22,100 hrs")
         st.caption("Planner-only analytics")
